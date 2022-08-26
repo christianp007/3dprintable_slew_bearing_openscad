@@ -277,7 +277,7 @@ module thread(height,diameter,threadThickness,pitch, outer=true, full=true){
          if (outer){
             threading(pitch=pitch, d=generateDiameter, windings = 1.5+height/pitch, angle = 40, full=full);
          } else {
-             Threading(pitch=pitch, d=generateDiameter, windings = 2.5+height/pitch, angle = 40, full=full);
+            Threading(pitch=pitch, d=generateDiameter, windings = 2.5+height/pitch, angle = 40);
          }
         }
         
@@ -295,6 +295,7 @@ module thread(height,diameter,threadThickness,pitch, outer=true, full=true){
 // copied from libraries Threading.scad and Naca_sweep.sad
 // https://www.thingiverse.com/thing:1659079/
 // created by Rudolf Huttary
+// removed len(<vector>) to remove OpenScad Warnings
 // =============================================
 
 module Threading(D = 0, pitch = 1, d = 12, windings = 10, helices = 1, angle = 60, steps=$fn)
@@ -391,7 +392,7 @@ function vec3D(v, z=0) = [for(i = [0:len(v)-1])
 
 // Translation - 1D, 2D, 3D point vector //////////////////////////
 // vector along all axes
-function T_(x=0, y=0, z=0, v) = let(x_ = (len(x)==3)?x:[x, y, z])
+function T_(x=0, y=0, z=0, v) = let(x_ = [x, y, z])
   [for (i=[0:len(v)-1]) T__(x_[0], x_[1], x_[2], p=v[i])]; 
 /// vector along one axis
 function Tx_(x=0, v) = T_(x=x, v=v); 
@@ -403,7 +404,7 @@ function T__(x=0, y=0, z=0, p) = len(p)==3?p+[x, y, z]:len(p)==2?p+[x, y]:p+x;
 //// Rotation - 2D, 3D point vector ///////////////////////////////////
 // vector around all axes 
 function R_(x=0, y=0, z=0, v) =             // 2D vectors allowed 
-  let(x_ = (len(x)==3)?x:[x, y, z])
+  let(x_ = [x, y, z])
   len(v[0])==3?Rx_(x_[0], Ry_(x_[1], Rz_(x_[2], v))):
   [for(i = [0:len(v)-1]) rot(x_[2], v[i])];  
 // vector around one axis
